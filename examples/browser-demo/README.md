@@ -1,6 +1,6 @@
-# Permis.io Browser Demo
+# Permissio.io Browser Demo
 
-Interactive browser-based demo application for testing and demonstrating the Permis.io Node.js SDK.
+Interactive browser-based demo application for testing and demonstrating the Permissio.io Node.js SDK.
 
 ## Features
 
@@ -13,7 +13,7 @@ Interactive browser-based demo application for testing and demonstrating the Per
 
 ## Prerequisites
 
-1. Make sure the Permis.io backend is running (default: `http://localhost:3001`)
+1. Make sure the Permissio.io backend is running (default: `http://localhost:3001`)
 2. Have an API key ready (format: `permis_key_xxxxxxxx...`)
 3. Know your Project ID and Environment ID
 

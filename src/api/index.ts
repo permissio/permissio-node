@@ -1,4 +1,4 @@
-export { BaseApiClient, PermisApiError } from "./base";
+export { BaseApiClient, PermissioApiError } from "./base";
 export type { ILogger } from "./base";
 export { UsersApi } from "./users";
 export { TenantsApi } from "./tenants";

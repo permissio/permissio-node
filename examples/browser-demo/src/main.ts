@@ -1,7 +1,7 @@
-import { Permis } from "permisio";
+import { Permissio } from "permissio";
 
 // Global SDK instance
-let permis: Permis | null = null;
+let permissio: Permissio | null = null;
 
 // Console logging helper
 function log(
@@ -112,7 +112,7 @@ function showResult(
 
 // Check if SDK is initialized
 function requireSdk(): boolean {
-  if (!permis) {
+  if (!permissio) {
     log("SDK not initialized. Please configure and initialize first.", "error");
     return false;
   }
@@ -136,7 +136,7 @@ async function initializeSdk() {
   }
 
   try {
-    permis = new Permis({
+    permissio = new Permissio({
       token,
       apiUrl,
       // Only pass projectId/environmentId if provided
@@ -154,7 +154,7 @@ async function initializeSdk() {
       );
 
       try {
-        const scope = await permis.getScope();
+        const scope = await permissio.getScope();
         log(
           `Scope fetched - Project: ${scope.projectId}, Environment: ${scope.environmentId}`,
           "success"
@@ -179,7 +179,7 @@ async function initializeSdk() {
     setStatus("✅ SDK initialized successfully!", "success");
     log(`SDK initialized with API URL: ${apiUrl}`, "success");
 
-    const config = permis.getConfig();
+    const config = permissio.getConfig();
     log(
       `Project: ${config.projectId}, Environment: ${config.environmentId}`,
       "info"
@@ -219,7 +219,7 @@ async function checkPermission() {
   );
 
   try {
-    const result = await permis!.checkWithDetails({
+    const result = await permissio!.checkWithDetails({
       user,
       action,
       resource,
@@ -254,7 +254,7 @@ async function listUsers() {
   log("Fetching users list...", "info");
 
   try {
-    const result = await permis!.api.users.list();
+    const result = await permissio!.api.users.list();
     showResult("usersResult", result);
     log(`Loaded ${result.data?.length || 0} users`, "success");
   } catch (error) {
@@ -284,7 +284,7 @@ async function createUser() {
   log(`Creating user: ${key}`, "info");
 
   try {
-    const result = await permis!.api.users.create({
+    const result = await permissio!.api.users.create({
       key,
       email: email || undefined,
       firstName: firstName || undefined,
@@ -306,7 +306,7 @@ async function listRoles() {
   log("Fetching roles list...", "info");
 
   try {
-    const result = await permis!.api.roles.list();
+    const result = await permissio!.api.roles.list();
     showResult("rolesResult", result);
     log(`Loaded ${result.data?.length || 0} roles`, "success");
   } catch (error) {
@@ -343,7 +343,7 @@ async function createRole() {
   log(`Creating role: ${key}`, "info");
 
   try {
-    const result = await permis!.api.roles.create({
+    const result = await permissio!.api.roles.create({
       key,
       name: name || undefined,
       description: description || undefined,
@@ -365,7 +365,7 @@ async function listTenants() {
   log("Fetching tenants list...", "info");
 
   try {
-    const result = await permis!.api.tenants.list();
+    const result = await permissio!.api.tenants.list();
     showResult("tenantsResult", result);
     log(`Loaded ${result.data?.length || 0} tenants`, "success");
   } catch (error) {
@@ -393,7 +393,7 @@ async function createTenant() {
   log(`Creating tenant: ${key}`, "info");
 
   try {
-    const result = await permis!.api.tenants.create({
+    const result = await permissio!.api.tenants.create({
       key,
       name: name || undefined,
       description: description || undefined,
@@ -414,7 +414,7 @@ async function listResources() {
   log("Fetching resources list...", "info");
 
   try {
-    const result = await permis!.api.resources.list();
+    const result = await permissio!.api.resources.list();
     showResult("resourcesResult", result);
     log(`Loaded ${result.data?.length || 0} resources`, "success");
   } catch (error) {
@@ -452,7 +452,7 @@ async function createResource() {
   log(`Creating resource: ${key}`, "info");
 
   try {
-    const result = await permis!.api.resources.create({
+    const result = await permissio!.api.resources.create({
       key,
       name: name || undefined,
       description: description || undefined,
@@ -474,7 +474,7 @@ async function listAssignments() {
   log("Fetching role assignments list...", "info");
 
   try {
-    const result = await permis!.api.roleAssignments.list();
+    const result = await permissio!.api.roleAssignments.list();
     showResult("assignmentsResult", result);
     log(`Loaded ${result.data?.length || 0} role assignments`, "success");
   } catch (error) {
@@ -506,7 +506,7 @@ async function assignRole() {
   );
 
   try {
-    const result = await permis!.api.roleAssignments.assign({
+    const result = await permissio!.api.roleAssignments.assign({
       user,
       role,
       tenant: tenant || undefined,
@@ -573,7 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ?.addEventListener("click", assignRole);
 
   log(
-    "Permis.io SDK Demo loaded. Configure your API settings to get started.",
+    "Permissio.io SDK Demo loaded. Configure your API settings to get started.",
     "info"
   );
 });

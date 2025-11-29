@@ -1,7 +1,7 @@
 /**
- * Permis.io SDK Configuration
+ * Permissio.io SDK Configuration
  */
-export interface IPermisConfig {
+export interface IPermissioConfig {
   /**
    * API key for authentication (required)
    * Format: permis_key_<64-char-hex>
@@ -9,8 +9,8 @@ export interface IPermisConfig {
   token: string;
 
   /**
-   * Base URL for the Permis.io API
-   * @default "https://api.permis.io"
+   * Base URL for the Permissio.io API
+   * @default "https://api.permissio.io"
    */
   apiUrl?: string;
 
@@ -119,7 +119,7 @@ export class MutableConfig implements IResolvedConfig {
  * Default configuration values
  */
 export const DEFAULT_CONFIG: Omit<IResolvedConfig, "token"> = {
-  apiUrl: "https://api.permis.io",
+  apiUrl: "https://api.permissio.io",
   debug: false,
   timeout: 30000,
   customHeaders: {},
@@ -130,14 +130,14 @@ export const DEFAULT_CONFIG: Omit<IResolvedConfig, "token"> = {
 /**
  * Resolve configuration by applying defaults
  */
-export function resolveConfig(config: IPermisConfig): MutableConfig {
+export function resolveConfig(config: IPermissioConfig): MutableConfig {
   if (!config.token) {
-    throw new Error("Permis.io SDK: API token is required");
+    throw new Error("Permissio.io SDK: API token is required");
   }
 
   if (!config.token.startsWith("permis_key_")) {
     throw new Error(
-      "Permis.io SDK: Invalid API key format. Expected format: permis_key_<key>"
+      "Permissio.io SDK: Invalid API key format. Expected format: permis_key_<key>"
     );
   }
 

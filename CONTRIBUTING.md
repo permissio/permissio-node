@@ -1,6 +1,6 @@
-# Contributing to Permis.io Node.js SDK
+# Contributing to Permissio.io Node.js SDK
 
-Thank you for your interest in contributing to the Permis.io Node.js SDK! This document provides guidelines and steps for contributing.
+Thank you for your interest in contributing to the Permissio.io Node.js SDK! This document provides guidelines and steps for contributing.
 
 ## Code of Conduct
 

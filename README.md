@@ -1,31 +1,31 @@
-# Permis.io Node.js SDK
+# Permissio.io Node.js SDK
 
-Official Node.js SDK for [Permis.io](https://permis.io) - Authorization as a Service.
+Official Node.js SDK for [Permissio.io](https://permissio.io) - Authorization as a Service.
 
 ## Installation
 
 ```bash
-npm install permisio
+npm install permissio
 # or
-yarn add permisio
+yarn add permissio
 # or
-pnpm add permisio
+pnpm add permissio
 ```
 
 ## Quick Start
 
 ```typescript
-import { Permis } from 'permisio';
+import { Permissio } from 'permissio';
 
 // Initialize the SDK
-const permis = new Permis({
+const permissio = new Permissio({
   token: 'permis_key_your_api_key_here',
   projectId: 'your-project-id',
   environmentId: 'your-environment-id',
 });
 
 // Check permissions
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'read',
   resource: 'document',
@@ -41,14 +41,14 @@ if (allowed) {
 ## Configuration
 
 ```typescript
-import { Permis } from 'permisio';
+import { Permissio } from 'permissio';
 
-const permis = new Permis({
+const permissio = new Permissio({
   // Required: Your API key
   token: 'permis_key_your_api_key_here',
 
-  // Optional: API base URL (defaults to https://api.permis.io)
-  apiUrl: 'https://api.permis.io',
+  // Optional: API base URL (defaults to https://api.permissio.io)
+  apiUrl: 'https://api.permissio.io',
 
   // Optional: Project and Environment IDs
   projectId: 'your-project-id',
@@ -78,7 +78,7 @@ const permis = new Permis({
 ### Basic Check
 
 ```typescript
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'read',
   resource: 'document',
@@ -88,7 +88,7 @@ const allowed = await permis.check({
 ### Check with Resource Instance
 
 ```typescript
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'edit',
   resource: {
@@ -101,7 +101,7 @@ const allowed = await permis.check({
 ### Check with Tenant Context
 
 ```typescript
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'delete',
   resource: 'document',
@@ -112,7 +112,7 @@ const allowed = await permis.check({
 ### Check with User Attributes
 
 ```typescript
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: {
     key: 'user@example.com',
     attributes: {
@@ -128,7 +128,7 @@ const allowed = await permis.check({
 ### Get Full Check Response
 
 ```typescript
-const response = await permis.checkWithDetails({
+const response = await permissio.checkWithDetails({
   user: 'user@example.com',
   action: 'read',
   resource: 'document',
@@ -142,7 +142,7 @@ console.log(response.debug); // debug info (when debug enabled)
 ### Bulk Permission Checks
 
 ```typescript
-const results = await permis.bulkCheck({
+const results = await permissio.bulkCheck({
   checks: [
     { user: 'user1@example.com', action: 'read', resource: 'document' },
     { user: 'user1@example.com', action: 'write', resource: 'document' },
@@ -159,7 +159,7 @@ results.results.forEach(({ request, response }) => {
 
 ```typescript
 try {
-  await permis.checkAndThrow({
+  await permissio.checkAndThrow({
     user: 'user@example.com',
     action: 'delete',
     resource: 'document',
@@ -176,7 +176,7 @@ try {
 ### Create a User
 
 ```typescript
-const user = await permis.api.users.create({
+const user = await permissio.api.users.create({
   key: 'user@example.com',
   email: 'user@example.com',
   firstName: 'John',
@@ -190,7 +190,7 @@ const user = await permis.api.users.create({
 ### Sync User (Create or Update)
 
 ```typescript
-const user = await permis.api.users.sync({
+const user = await permissio.api.users.sync({
   key: 'user@example.com',
   email: 'user@example.com',
   firstName: 'John',
@@ -201,7 +201,7 @@ const user = await permis.api.users.sync({
 ### Sync User with Roles
 
 ```typescript
-await permis.syncUser({
+await permissio.syncUser({
   key: 'user@example.com',
   email: 'user@example.com',
   firstName: 'John',
@@ -216,7 +216,7 @@ await permis.syncUser({
 ### List Users
 
 ```typescript
-const users = await permis.api.users.list({
+const users = await permissio.api.users.list({
   page: 1,
   perPage: 10,
   search: 'john',
@@ -226,13 +226,13 @@ const users = await permis.api.users.list({
 ### Get User Roles
 
 ```typescript
-const roles = await permis.api.users.getRoles('user@example.com');
+const roles = await permissio.api.users.getRoles('user@example.com');
 ```
 
 ### Assign Role to User
 
 ```typescript
-await permis.api.users.assignRole('user@example.com', 'admin', 'acme-corp');
+await permissio.api.users.assignRole('user@example.com', 'admin', 'acme-corp');
 ```
 
 ## Tenant Management
@@ -240,7 +240,7 @@ await permis.api.users.assignRole('user@example.com', 'admin', 'acme-corp');
 ### Create a Tenant
 
 ```typescript
-const tenant = await permis.api.tenants.create({
+const tenant = await permissio.api.tenants.create({
   key: 'acme-corp',
   name: 'Acme Corporation',
   description: 'Main organization',
@@ -253,13 +253,13 @@ const tenant = await permis.api.tenants.create({
 ### Get Tenant Users
 
 ```typescript
-const users = await permis.api.tenants.getUsers('acme-corp');
+const users = await permissio.api.tenants.getUsers('acme-corp');
 ```
 
 ### Add User to Tenant
 
 ```typescript
-await permis.api.tenants.addUser('acme-corp', 'user@example.com');
+await permissio.api.tenants.addUser('acme-corp', 'user@example.com');
 ```
 
 ## Role Management
@@ -267,7 +267,7 @@ await permis.api.tenants.addUser('acme-corp', 'user@example.com');
 ### Create a Role
 
 ```typescript
-const role = await permis.api.roles.create({
+const role = await permissio.api.roles.create({
   key: 'editor',
   name: 'Editor',
   description: 'Can edit documents',
@@ -278,14 +278,14 @@ const role = await permis.api.roles.create({
 ### Add Permission to Role
 
 ```typescript
-await permis.api.roles.addPermission('editor', 'document:delete');
+await permissio.api.roles.addPermission('editor', 'document:delete');
 ```
 
 ### Role Inheritance
 
 ```typescript
 // Create a role that extends another
-await permis.api.roles.create({
+await permissio.api.roles.create({
   key: 'admin',
   name: 'Admin',
   extends: ['editor'],
@@ -298,7 +298,7 @@ await permis.api.roles.create({
 ### Create a Resource Type
 
 ```typescript
-const resource = await permis.api.resources.create({
+const resource = await permissio.api.resources.create({
   key: 'document',
   name: 'Document',
   actions: ['read', 'write', 'delete', 'share'],
@@ -308,7 +308,7 @@ const resource = await permis.api.resources.create({
 ### Create a Resource Instance
 
 ```typescript
-const instance = await permis.api.resources.createInstance({
+const instance = await permissio.api.resources.createInstance({
   key: 'doc-123',
   resourceType: 'document',
   tenant: 'acme-corp',
@@ -324,7 +324,7 @@ const instance = await permis.api.resources.createInstance({
 ### Assign a Role
 
 ```typescript
-await permis.api.roleAssignments.assign({
+await permissio.api.roleAssignments.assign({
   user: 'user@example.com',
   role: 'admin',
   tenant: 'acme-corp',
@@ -334,7 +334,7 @@ await permis.api.roleAssignments.assign({
 ### Assign Role on Resource
 
 ```typescript
-await permis.api.roleAssignments.assign({
+await permissio.api.roleAssignments.assign({
   user: 'user@example.com',
   role: 'editor',
   resource: 'document',
@@ -345,7 +345,7 @@ await permis.api.roleAssignments.assign({
 ### Bulk Role Assignment
 
 ```typescript
-const result = await permis.api.roleAssignments.bulkAssign([
+const result = await permissio.api.roleAssignments.bulkAssign([
   { user: 'user1@example.com', role: 'viewer', tenant: 'acme-corp' },
   { user: 'user2@example.com', role: 'editor', tenant: 'acme-corp' },
   { user: 'user3@example.com', role: 'admin', tenant: 'acme-corp' },
@@ -357,7 +357,7 @@ console.log(`Created: ${result.created}, Failed: ${result.failed}`);
 ### Check if User Has Role
 
 ```typescript
-const hasRole = await permis.api.roleAssignments.hasRole(
+const hasRole = await permissio.api.roleAssignments.hasRole(
   'user@example.com',
   'admin',
   { tenant: 'acme-corp' }
@@ -367,7 +367,7 @@ const hasRole = await permis.api.roleAssignments.hasRole(
 ## Get User Permissions
 
 ```typescript
-const permissions = await permis.getPermissions({
+const permissions = await permissio.getPermissions({
   user: 'user@example.com',
   tenant: 'acme-corp',
 });
@@ -379,17 +379,17 @@ console.log(permissions.permissions); // ['document:read', 'document:write', ...
 ## Error Handling
 
 ```typescript
-import { Permis, PermisApiError } from 'permisio';
+import { Permissio, PermissioApiError } from 'permissio';
 
-const permis = new Permis({
+const permissio = new Permissio({
   token: 'permis_key_...',
   throwOnError: true, // default
 });
 
 try {
-  await permis.api.users.get('nonexistent-user');
+  await permissio.api.users.get('nonexistent-user');
 } catch (error) {
-  if (error instanceof PermisApiError) {
+  if (error instanceof PermissioApiError) {
     console.error('API Error:', error.message);
     console.error('Status Code:', error.statusCode);
     console.error('Error Code:', error.code);
@@ -401,13 +401,13 @@ try {
 ### Disable Throwing Errors
 
 ```typescript
-const permis = new Permis({
+const permissio = new Permissio({
   token: 'permis_key_...',
   throwOnError: false,
 });
 
 // Will return false instead of throwing
-const allowed = await permis.check({
+const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'read',
   resource: 'document',
@@ -427,7 +427,7 @@ import {
   IUserCreate,
   IUserRead,
   IRoleAssignmentCreate,
-} from 'permisio';
+} from 'permissio';
 
 const config: IPermisConfig = {
   token: 'permis_key_...',
@@ -435,7 +435,7 @@ const config: IPermisConfig = {
   environmentId: 'production',
 };
 
-const permis = new Permis(config);
+const permissio = new Permissio(config);
 
 const request: ICheckRequest = {
   user: 'user@example.com',
@@ -443,7 +443,7 @@ const request: ICheckRequest = {
   resource: 'document',
 };
 
-const response: ICheckResponse = await permis.checkWithDetails(request);
+const response: ICheckResponse = await permissio.checkWithDetails(request);
 ```
 
 ## Framework Integration Examples
@@ -451,10 +451,10 @@ const response: ICheckResponse = await permis.checkWithDetails(request);
 ### Express.js Middleware
 
 ```typescript
-import { Permis } from 'permisio';
+import { Permissio } from 'permissio';
 import express from 'express';
 
-const permis = new Permis({
+const permissio = new Permissio({
   token: process.env.PERMIS_API_KEY!,
   projectId: process.env.PERMIS_PROJECT_ID!,
   environmentId: process.env.PERMIS_ENVIRONMENT_ID!,
@@ -469,7 +469,7 @@ function requirePermission(action: string, getResource: (req: express.Request) =
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const allowed = await permis.check({
+    const allowed = await permissio.check({
       user: userId,
       action,
       resource: getResource(req),
@@ -498,7 +498,7 @@ app.get(
 ```typescript
 import { Injectable, CanActivate, ExecutionContext, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Permis } from 'permisio';
+import { Permissio } from 'permissio';
 
 export const PERMISSION_KEY = 'permission';
 export const RequirePermission = (action: string, resource: string) =>
@@ -520,7 +520,7 @@ export class PermisGuard implements CanActivate {
 
     if (!userId) return false;
 
-    return this.permis.check({
+    return this.permissio.check({
       user: userId,
       action: permission.action,
       resource: permission.resource,
@@ -535,6 +535,6 @@ MIT
 
 ## Support
 
-- Documentation: [https://docs.permis.io](https://docs.permis.io)
-- Issues: [GitHub Issues](https://github.com/permisio/permisio-node/issues)
-- Email: support@permis.io
+- Documentation: [https://docs.permissio.io](https://docs.permissio.io)
+- Issues: [GitHub Issues](https://github.com/permissio/permissio-node/issues)
+- Email: support@permissio.io

@@ -1,7 +1,7 @@
 {
   "name": "permissio",
   "version": "1.0.0",
-  "description": "Permis.io Node.js SDK - Authorization as a service",
+  "description": "Permissio.io Node.js SDK - Authorization as a service",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -33,10 +33,10 @@
     "rbac",
     "abac",
     "access-control",
-    "permisio",
+    "permissio",
     "sdk"
   ],
-  "author": "Permis.io",
+  "author": "Permissio.io",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
   "bugs": {
     "url": "https://github.com/permissio/permissio-node/issues"
   },
-  "homepage": "https://permis.io",
+  "homepage": "https://permissio.io",
   "engines": {
     "node": ">=16.0.0"
   },

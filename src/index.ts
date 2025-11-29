@@ -1,19 +1,19 @@
 /**
- * Permis.io Node.js SDK
+ * Permissio.io Node.js SDK
  *
  * @packageDocumentation
  *
  * @example
  * ```typescript
- * import { Permis } from 'permisio';
+ * import { Permissio } from 'permissio';
  *
  * // Simplest usage - project and environment are auto-detected from API key
- * const permis = new Permis({
+ * const permissio = new Permissio({
  *   token: 'permis_key_your_api_key_here',
  * });
  *
  * // Or with explicit project and environment IDs
- * const permis2 = new Permis({
+ * const permissio2 = new Permissio({
  *   token: 'permis_key_your_api_key_here',
  *   projectId: 'your-project-id',
  *   environmentId: 'your-environment-id',
@@ -35,17 +35,17 @@
  */
 
 // Main SDK class
-export { Permis, createPermis } from "./permis";
-export type { IPermisApi } from "./permis";
+export { Permissio, createPermissio } from "./permissio";
+export type { IPermissioApi } from "./permissio";
 
 // Configuration
 export { resolveConfig, DEFAULT_CONFIG, MutableConfig } from "./config";
-export type { IPermisConfig, IResolvedConfig } from "./config";
+export type { IPermissioConfig, IResolvedConfig } from "./config";
 
 // API clients
 export {
   BaseApiClient,
-  PermisApiError,
+  PermissioApiError,
   UsersApi,
   TenantsApi,
   RolesApi,
@@ -109,4 +109,4 @@ export type {
 } from "./types";
 
 // Default export
-export { Permis as default } from "./permis";
+export { Permissio as default } from "./permissio";

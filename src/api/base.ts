@@ -8,9 +8,9 @@ import { IResolvedConfig } from "../config";
 import { IApiError } from "../types";
 
 /**
- * Custom error class for Permis.io API errors
+ * Custom error class for Permissio.io API errors
  */
-export class PermisApiError extends Error {
+export class PermissioApiError extends Error {
   public readonly statusCode: number;
   public readonly code?: string;
   public readonly details?: Record<string, unknown>;
@@ -18,7 +18,7 @@ export class PermisApiError extends Error {
 
   constructor(error: IApiError, originalError?: AxiosError) {
     super(error.message);
-    this.name = "PermisApiError";
+    this.name = "PermissioApiError";
     this.statusCode = error.statusCode;
     this.code = error.code;
     this.details = error.details;
@@ -26,7 +26,7 @@ export class PermisApiError extends Error {
 
     // Maintains proper stack trace for where error was thrown
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, PermisApiError);
+      Error.captureStackTrace(this, PermissioApiError);
     }
   }
 }
@@ -46,16 +46,16 @@ export interface ILogger {
  */
 const defaultLogger: ILogger = {
   debug: (message: string, data?: unknown) => {
-    console.debug(`[Permis.io SDK] ${message}`, data ?? "");
+    console.debug(`[Permissio.io SDK] ${message}`, data ?? "");
   },
   info: (message: string, data?: unknown) => {
-    console.info(`[Permis.io SDK] ${message}`, data ?? "");
+    console.info(`[Permissio.io SDK] ${message}`, data ?? "");
   },
   warn: (message: string, data?: unknown) => {
-    console.warn(`[Permis.io SDK] ${message}`, data ?? "");
+    console.warn(`[Permissio.io SDK] ${message}`, data ?? "");
   },
   error: (message: string, data?: unknown) => {
-    console.error(`[Permis.io SDK] ${message}`, data ?? "");
+    console.error(`[Permissio.io SDK] ${message}`, data ?? "");
   },
 };
 
@@ -161,15 +161,15 @@ export class BaseApiClient {
       return this.client.request(config);
     }
 
-    // Transform error to PermisApiError
+    // Transform error to PermissioApiError
     const apiError = this.transformError(error);
     this.logger.error("API Error", apiError);
 
     if (this.config.throwOnError) {
-      throw new PermisApiError(apiError, error);
+      throw new PermissioApiError(apiError, error);
     }
 
-    return Promise.reject(new PermisApiError(apiError, error));
+    return Promise.reject(new PermissioApiError(apiError, error));
   }
 
   /**
