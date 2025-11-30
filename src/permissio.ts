@@ -162,7 +162,8 @@ export class Permissio {
     try {
       const userKey = this.getUserKey(request.user);
       const resourceType = this.extractResourceType(request.resource);
-      const resourceInstanceKey = this.extractResourceInstanceKey(
+      // Reserved for future instance-level permission checks
+      const _resourceInstanceKey = this.extractResourceInstanceKey(
         request.resource
       );
       const requiredPermission = `${resourceType}:${request.action}`;
