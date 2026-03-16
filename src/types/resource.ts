@@ -1,22 +1,24 @@
 /**
- * Resource type definition representing a type of resource in the system
+ * Resource action definition (as returned by the backend)
  */
-export interface IResource {
-  key: string;
+export interface IResourceAction {
+  id?: string;
+  key?: string;
   name?: string;
   description?: string;
-  actions?: string[];
-  attributes?: Record<string, unknown>;
 }
 
 /**
- * Resource type creation payload
+ * Resource type creation payload.
+ * Actions can be provided as an array of string keys (SDK convenience)
+ * or as a map { [actionKey]: { name: ... } } (raw backend format).
  */
 export interface IResourceCreate {
   key: string;
   name?: string;
   description?: string;
-  actions?: string[];
+  /** Action keys (e.g. ["read", "write"]) — will be converted to map format */
+  actions?: string[] | Record<string, IResourceAction>;
   attributes?: Record<string, unknown>;
 }
 
@@ -26,7 +28,7 @@ export interface IResourceCreate {
 export interface IResourceUpdate {
   name?: string;
   description?: string;
-  actions?: string[];
+  actions?: string[] | Record<string, IResourceAction>;
   attributes?: Record<string, unknown>;
 }
 
@@ -38,10 +40,14 @@ export interface IResourceRead {
   key: string;
   name?: string;
   description?: string;
-  actions?: string[];
+  /** Actions map as returned by the backend */
+  actions?: Record<string, IResourceAction>;
   attributes?: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
+  created_at?: string;
+  updated_at?: string;
+  // Convenience aliases
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
@@ -49,10 +55,13 @@ export interface IResourceRead {
  */
 export interface IResourceList {
   data: IResourceRead[];
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
+  total_count?: number;
+  page_count?: number;
+  // Legacy aliases
+  page?: number;
+  perPage?: number;
+  total?: number;
+  totalPages?: number;
 }
 
 /**

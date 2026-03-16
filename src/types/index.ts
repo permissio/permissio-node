@@ -27,7 +27,6 @@ export type {
 
 // Resource types
 export type {
-  IResource,
   IResourceCreate,
   IResourceUpdate,
   IResourceRead,

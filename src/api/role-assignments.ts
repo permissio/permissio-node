@@ -124,15 +124,13 @@ export class RoleAssignmentsApi extends BaseApiClient {
    * @param assignment - Role assignment to remove
    */
   async unassign(assignment: IRoleAssignmentRemove): Promise<void> {
-    const params = new URLSearchParams();
-    params.append("user", assignment.user);
-    params.append("role", assignment.role);
-    if (assignment.tenant) params.append("tenant", assignment.tenant);
-    if (assignment.resource) params.append("resource", assignment.resource);
-    if (assignment.resourceInstance)
-      params.append("resourceInstance", assignment.resourceInstance);
-
-    return this.httpDelete(`/role_assignments?${params.toString()}`);
+    // Backend DELETE endpoint expects a JSON body, not query params
+    return this.httpDelete<void>("/role_assignments", {
+      user: assignment.user,
+      role: assignment.role,
+      tenant: assignment.tenant,
+      resource_instance: assignment.resourceInstance,
+    });
   }
 
   /**

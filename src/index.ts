@@ -75,7 +75,6 @@ export type {
   IRoleRead,
   IRoleList,
   // Resource types
-  IResource,
   IResourceCreate,
   IResourceUpdate,
   IResourceRead,

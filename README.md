@@ -12,16 +12,16 @@ yarn add permissio
 pnpm add permissio
 ```
 
+**Requirements**: Node.js 16+
+
 ## Quick Start
 
 ```typescript
 import { Permissio } from 'permissio';
 
-// Initialize the SDK
+// Simplest usage — project and environment are auto-detected from the API key
 const permissio = new Permissio({
   token: 'permis_key_your_api_key_here',
-  projectId: 'your-project-id',
-  environmentId: 'your-environment-id',
 });
 
 // Check permissions
@@ -44,13 +44,14 @@ if (allowed) {
 import { Permissio } from 'permissio';
 
 const permissio = new Permissio({
-  // Required: Your API key
+  // Required: Your API key (must start with "permis_key_")
   token: 'permis_key_your_api_key_here',
 
   // Optional: API base URL (defaults to https://api.permissio.io)
   apiUrl: 'https://api.permissio.io',
 
   // Optional: Project and Environment IDs
+  // If omitted, they are auto-fetched from the /v1/api-key/scope endpoint
   projectId: 'your-project-id',
   environmentId: 'your-environment-id',
 
@@ -60,13 +61,13 @@ const permissio = new Permissio({
   // Optional: Request timeout in ms (default: 30000)
   timeout: 30000,
 
-  // Optional: Number of retry attempts (default: 3)
+  // Optional: Number of retry attempts for transient errors (default: 3)
   retryAttempts: 3,
 
-  // Optional: Throw errors or return false (default: true)
+  // Optional: Throw errors or return false on denial (default: true)
   throwOnError: true,
 
-  // Optional: Custom headers
+  // Optional: Custom headers sent with every request
   customHeaders: {
     'X-Custom-Header': 'value',
   },
@@ -109,7 +110,7 @@ const allowed = await permissio.check({
 });
 ```
 
-### Check with User Attributes
+### Check with User Attributes (ABAC)
 
 ```typescript
 const allowed = await permissio.check({
@@ -135,8 +136,8 @@ const response = await permissio.checkWithDetails({
 });
 
 console.log(response.allowed); // boolean
-console.log(response.reason); // string (optional)
-console.log(response.debug); // debug info (when debug enabled)
+console.log(response.reason);  // string (optional)
+console.log(response.debug);   // debug info (when debug mode enabled)
 ```
 
 ### Bulk Permission Checks
@@ -164,11 +165,23 @@ try {
     action: 'delete',
     resource: 'document',
   });
-  // Access granted, continue with operation
+  // Access granted — continue with operation
 } catch (error) {
-  // Access denied
+  // Access denied — error is a PermissioApiError
   console.error(error.message);
 }
+```
+
+### Get All User Permissions
+
+```typescript
+const permissions = await permissio.getPermissions({
+  user: 'user@example.com',
+  tenant: 'acme-corp',
+});
+
+console.log(permissions.roles);       // ['admin', 'editor']
+console.log(permissions.permissions); // ['document:read', 'document:write', ...]
 ```
 
 ## User Management
@@ -198,7 +211,7 @@ const user = await permissio.api.users.sync({
 });
 ```
 
-### Sync User with Roles
+### Sync User with Roles (Convenience Method)
 
 ```typescript
 await permissio.syncUser({
@@ -229,10 +242,17 @@ const users = await permissio.api.users.list({
 const roles = await permissio.api.users.getRoles('user@example.com');
 ```
 
-### Assign Role to User
+### Assign / Unassign Role to User
 
 ```typescript
 await permissio.api.users.assignRole('user@example.com', 'admin', 'acme-corp');
+await permissio.api.users.unassignRole('user@example.com', 'admin', 'acme-corp');
+```
+
+### Get User Tenants
+
+```typescript
+const tenants = await permissio.api.users.getTenants('user@example.com');
 ```
 
 ## Tenant Management
@@ -250,16 +270,21 @@ const tenant = await permissio.api.tenants.create({
 });
 ```
 
-### Get Tenant Users
+### Sync Tenant (Create or Update)
+
+```typescript
+await permissio.api.tenants.sync({
+  key: 'acme-corp',
+  name: 'Acme Corporation',
+});
+```
+
+### Manage Tenant Users
 
 ```typescript
 const users = await permissio.api.tenants.getUsers('acme-corp');
-```
-
-### Add User to Tenant
-
-```typescript
 await permissio.api.tenants.addUser('acme-corp', 'user@example.com');
+await permissio.api.tenants.removeUser('acme-corp', 'user@example.com');
 ```
 
 ## Role Management
@@ -275,13 +300,25 @@ const role = await permissio.api.roles.create({
 });
 ```
 
-### Add Permission to Role
+### Sync Role (Create or Update)
+
+```typescript
+await permissio.api.roles.sync({
+  key: 'editor',
+  name: 'Editor',
+  permissions: ['document:read', 'document:write'],
+});
+```
+
+### Manage Role Permissions
 
 ```typescript
 await permissio.api.roles.addPermission('editor', 'document:delete');
+await permissio.api.roles.removePermission('editor', 'document:delete');
+const permissions = await permissio.api.roles.getPermissions('editor');
 ```
 
-### Role Inheritance
+### Role Inheritance (Extends)
 
 ```typescript
 // Create a role that extends another
@@ -291,6 +328,11 @@ await permissio.api.roles.create({
   extends: ['editor'],
   permissions: ['document:delete', 'user:manage'],
 });
+
+// Manage extends at runtime
+await permissio.api.roles.addExtends('admin', 'editor');
+await permissio.api.roles.removeExtends('admin', 'editor');
+const parents = await permissio.api.roles.getExtends('admin');
 ```
 
 ## Resource Management
@@ -305,9 +347,28 @@ const resource = await permissio.api.resources.create({
 });
 ```
 
-### Create a Resource Instance
+### Sync Resource (Create or Update)
 
 ```typescript
+await permissio.api.resources.sync({
+  key: 'document',
+  name: 'Document',
+  actions: ['read', 'write', 'delete'],
+});
+```
+
+### Manage Resource Actions
+
+```typescript
+await permissio.api.resources.addAction('document', 'archive');
+await permissio.api.resources.removeAction('document', 'archive');
+const actions = await permissio.api.resources.getActions('document');
+```
+
+### Resource Instances
+
+```typescript
+// Create an instance
 const instance = await permissio.api.resources.createInstance({
   key: 'doc-123',
   resourceType: 'document',
@@ -316,6 +377,16 @@ const instance = await permissio.api.resources.createInstance({
     title: 'My Document',
     owner: 'user@example.com',
   },
+});
+
+// List, get, delete, sync instances
+const instances = await permissio.api.resources.listInstances('document');
+const inst = await permissio.api.resources.getInstance('document', 'doc-123');
+await permissio.api.resources.deleteInstance('document', 'doc-123');
+await permissio.api.resources.syncInstance({
+  key: 'doc-123',
+  resourceType: 'document',
+  tenant: 'acme-corp',
 });
 ```
 
@@ -331,7 +402,7 @@ await permissio.api.roleAssignments.assign({
 });
 ```
 
-### Assign Role on Resource
+### Assign Role on a Resource Instance
 
 ```typescript
 await permissio.api.roleAssignments.assign({
@@ -342,7 +413,7 @@ await permissio.api.roleAssignments.assign({
 });
 ```
 
-### Bulk Role Assignment
+### Bulk Assign / Unassign Roles
 
 ```typescript
 const result = await permissio.api.roleAssignments.bulkAssign([
@@ -350,11 +421,29 @@ const result = await permissio.api.roleAssignments.bulkAssign([
   { user: 'user2@example.com', role: 'editor', tenant: 'acme-corp' },
   { user: 'user3@example.com', role: 'admin', tenant: 'acme-corp' },
 ]);
-
 console.log(`Created: ${result.created}, Failed: ${result.failed}`);
+
+await permissio.api.roleAssignments.bulkUnassign([
+  { user: 'user1@example.com', role: 'viewer', tenant: 'acme-corp' },
+]);
 ```
 
-### Check if User Has Role
+### List Assignments
+
+```typescript
+// General list with filters
+const all = await permissio.api.roleAssignments.list({
+  user: 'user@example.com',
+  tenant: 'acme-corp',
+});
+
+// Filtered by entity
+const byUser     = await permissio.api.roleAssignments.listByUser('user@example.com');
+const byTenant   = await permissio.api.roleAssignments.listByTenant('acme-corp');
+const byResource = await permissio.api.roleAssignments.listByResource('document', 'doc-123');
+```
+
+### Check Role / Get Role Users
 
 ```typescript
 const hasRole = await permissio.api.roleAssignments.hasRole(
@@ -362,18 +451,9 @@ const hasRole = await permissio.api.roleAssignments.hasRole(
   'admin',
   { tenant: 'acme-corp' }
 );
-```
 
-## Get User Permissions
-
-```typescript
-const permissions = await permissio.getPermissions({
-  user: 'user@example.com',
-  tenant: 'acme-corp',
-});
-
-console.log(permissions.roles); // ['admin', 'editor']
-console.log(permissions.permissions); // ['document:read', 'document:write', ...]
+const userRoles = await permissio.api.roleAssignments.getUserRoles('user@example.com');
+const roleUsers = await permissio.api.roleAssignments.getRoleUsers('admin');
 ```
 
 ## Error Handling
@@ -406,7 +486,7 @@ const permissio = new Permissio({
   throwOnError: false,
 });
 
-// Will return false instead of throwing
+// Returns false instead of throwing on access denial
 const allowed = await permissio.check({
   user: 'user@example.com',
   action: 'read',
@@ -420,8 +500,8 @@ This SDK is written in TypeScript and provides full type definitions.
 
 ```typescript
 import {
-  Permis,
-  IPermisConfig,
+  Permissio,
+  IPermissioConfig,
   ICheckRequest,
   ICheckResponse,
   IUserCreate,
@@ -429,7 +509,7 @@ import {
   IRoleAssignmentCreate,
 } from 'permissio';
 
-const config: IPermisConfig = {
+const config: IPermissioConfig = {
   token: 'permis_key_...',
   projectId: 'my-project',
   environmentId: 'production',
@@ -505,10 +585,10 @@ export const RequirePermission = (action: string, resource: string) =>
   SetMetadata(PERMISSION_KEY, { action, resource });
 
 @Injectable()
-export class PermisGuard implements CanActivate {
+export class PermissioGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private permis: Permis
+    private permissio: Permissio
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

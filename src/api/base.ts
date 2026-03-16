@@ -290,10 +290,12 @@ export class BaseApiClient {
   }
 
   /**
-   * Make a DELETE request
+   * Make a DELETE request (optionally with a JSON body)
    */
-  protected async httpDelete<T = void>(path: string): Promise<T> {
-    const response = await this.client.delete<T>(this.buildPath(path));
+  protected async httpDelete<T = void>(path: string, data?: unknown): Promise<T> {
+    const response = await this.client.delete<T>(this.buildPath(path), {
+      data,
+    });
     return response.data;
   }
 }

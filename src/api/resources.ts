@@ -37,9 +37,14 @@ export class ResourcesApi extends BaseApiClient {
   /**
    * Create a new resource type
    * @param resourceData - Resource type creation data
+   * Actions can be passed as a string array (["read","write"]) for convenience;
+   * the SDK converts them to the map format the backend expects.
    */
   async create(resourceData: IResourceCreate): Promise<IResourceRead> {
-    return this.httpPost<IResourceRead>("/schema/resources", resourceData);
+    return this.httpPost<IResourceRead>(
+      "/schema/resources",
+      this.normalizeActions(resourceData)
+    );
   }
 
   /**
@@ -53,7 +58,7 @@ export class ResourcesApi extends BaseApiClient {
   ): Promise<IResourceRead> {
     return this.httpPatch<IResourceRead>(
       `/schema/resources/${encodeURIComponent(resourceKey)}`,
-      resourceData
+      this.normalizeActions(resourceData)
     );
   }
 
@@ -74,8 +79,26 @@ export class ResourcesApi extends BaseApiClient {
   async sync(resourceData: IResourceCreate): Promise<IResourceRead> {
     return this.httpPut<IResourceRead>(
       `/schema/resources/${encodeURIComponent(resourceData.key)}`,
-      resourceData
+      this.normalizeActions(resourceData)
     );
+  }
+
+  /**
+   * Normalize actions from string[] convenience format to the map format
+   * the backend expects: { [actionKey]: { name: string } }
+   */
+  private normalizeActions<T extends { actions?: string[] | Record<string, unknown> }>(
+    data: T
+  ): T {
+    if (!data.actions || !Array.isArray(data.actions)) {
+      return data;
+    }
+    const actionsMap: Record<string, { name: string }> = {};
+    for (const action of data.actions) {
+      const key = String(action);
+      actionsMap[key] = { name: key.charAt(0).toUpperCase() + key.slice(1) };
+    }
+    return { ...data, actions: actionsMap };
   }
 
   /**
